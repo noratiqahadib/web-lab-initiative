@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+  <link rel="stylesheet" href="scene.css">
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   <!-- we import arjs version without NFT but with marker + location based support -->
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
@@ -12,9 +13,9 @@
                 this.el.addEventListener("markerFound", () => this.modelVisible = true);
                 this.el.addEventListener("markerLost", () => this.modelVisible = false);
                 // grab the model reference
-                document.querySelector("[gltf-model]").addEventListener("model-loaded", evt => {
-                    this.mesh = evt.detail.model
-                })
+                document.querySelector("[gltf-model]").addEventListener("model-loaded", (evt) => {
+                this.mesh = evt.detail.model;
+                });
                 // hammerjs input helper
                 const hammertime = new Hammer(document.body);
 
@@ -29,59 +30,138 @@
                     if (!this.modelVisible) return;
                     this.mesh.scale.multiplyScalar(0).addScalar(ev.scale * currentScale);
                 });
-     
+    
                 // rotation
-                // pan left/right for rotation
                 this.isPanning = false;
                 hammertime.on("panleft", () => {
                     if (!this.modelVisible) return;
-                    this.isPanning = true
+                    this.isPanning = true;
                     this.mesh.rotation.y -= 4 * Math.PI / 360;
-                })
-               
+                });
+    
                 hammertime.on("panright", () => {
                     if (!this.modelVisible) return;
-                    this.isPanning = true
+                    this.isPanning = true;
                     this.mesh.rotation.y += 4 * Math.PI / 360;
-                })
-                hammertime.on("panend", () => this.isPanning = false)
-                hammertime.on("pancancel", () => this.isPanning = false)
-
-                hammertime.on("swipeleft",  ({velocity}) => {
+                });
+    
+                hammertime.on("panup", () => {
                     if (!this.modelVisible) return;
-                    this.swipeVelocity = velocity
-                })
-                hammertime.on("swiperight", ({velocity}) => {
+                    this.isPanning = true;
+                    this.mesh.rotation.x -= 4 * Math.PI / 360;
+                });
+    
+                hammertime.on("pandown", () => {
                     if (!this.modelVisible) return;
-                    this.swipeVelocity = velocity
-                })
+                    this.isPanning = true;
+                    this.mesh.rotation.x += 4 * Math.PI / 360;
+                });
+    
+                hammertime.on("panend", () => (this.isPanning = false));
+                hammertime.on("pancancel", () => (this.isPanning = false));
+    
+                hammertime.on("swipeleft", ({ velocity }) => {
+                if (!this.modelVisible) return;
+                this.swipeVelocity = velocity;
+                });
+    
+                hammertime.on("swiperight", ({ velocity }) => {
+                if (!this.modelVisible) return;
+                this.swipeVelocity = velocity;
+                });
+    
+                hammertime.on("swipeup", ({ velocity }) => {
+                if (!this.modelVisible) return;
+                this.swipeVelocityUp = velocity;
+                });
+    
+                hammertime.on("swipedown", ({ velocity }) => {
+                if (!this.modelVisible) return;
+                this.swipeVelocityDown = velocity;
+                });
             },
-            tick: function() {
-                if (!(this.modelVisible && this.swipeVelocity &&!this.isPanning)) return;
-                this.mesh.rotation.y += this.swipeVelocity * 4 * Math.PI / 360;
-                this.swipeVelocity *= 0.93;
-                if (Math.abs(this.swipeVelocity) <= 0.1) this.swipeVelocity = 0;
-            }
-        })
+            tick: function () {
+                if (this.modelVisible && this.swipeVelocity && !this.isPanning) {
+                    this.mesh.rotation.y += this.swipeVelocity * 4 * Math.PI / 360;
+                    this.swipeVelocity *= 0.93;
+                    if (Math.abs(this.swipeVelocity) <= 0.1) this.swipeVelocity = 0;
+                }
+    
+                if (this.modelVisible && this.swipeVelocityUp && !this.isPanning) {
+                    this.mesh.rotation.x -= this.swipeVelocityUp * 4 * Math.PI / 360;
+                    this.swipeVelocityUp *= 0.93;
+                    if (Math.abs(this.swipeVelocityUp) <= 0.1) this.swipeVelocityUp = 0;
+                }
+    
+                if (this.modelVisible && this.swipeVelocityDown && !this.isPanning) {
+                    this.mesh.rotation.x += this.swipeVelocityDown * 4 * Math.PI / 360;
+                    this.swipeVelocityDown *= 0.93;
+                    if (Math.abs(this.swipeVelocityDown) <= 0.1) this.swipeVelocityDown = 0;
+                }
+            },
+        });
     </script>
 
   <body style="margin : 0px; overflow: hidden;">
-    <div style='position: fixed; top: 10px; width:100%; text-align: center; z-index: 1;'>
-        <button>
+    <div style='display: flex; justify-content: center; margin-top: 10px; width:100%; text-align: center; z-index: 1;'>
+        <button id="toggleButton" class="button-guide">
             HIDE OBJECTS
+        </button>
+        <button id="toggleGuideButton" class="button-guide">
+            SHOW GUIDE
         </button>
     </div>
     <div style="height: 90%">
-        <a-scene embedded arjs style="width: 750px; height: 750px">
+        <a-scene embedded arjs  antialias="true" renderer="webgl">
             <a-marker preset="hiro" controller>
+            <!-- <a-marker type='pattern' url='./unifi-marker.patt'> -->
               <a-entity
-                position="0 0 0"
-                scale="0.01 0.01 0.01"
-                gltf-model="https://cdn.aframe.io/examples/ar/models/triceratops/scene.gltf"
+                position="1 0 0"
+                scale="0.03 0.03 0.03"
+                rotation="180 360 0"
+                gltf-model="./ImageToStl.com_modem.gltf"
               ></a-entity>
             </a-marker>
             <a-entity camera></a-entity>
           </a-scene>
     </div>
+
+    <div id="bottomSheet" class="bottom-sheet">
+        <div class="bottom-sheet-content">
+            <!-- <button id="closeSheet" class="close-button">&times;</button> -->
+            <h2>Troubleshooting Guide</h2>
+            <p>Here is the troubleshooting guide content...</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('toggleButton').addEventListener('click', () => {
+          const model = document.querySelector('a-marker a-entity');
+          if (model.getAttribute('visible')) {
+            model.setAttribute('visible', false);
+            document.getElementById('toggleButton').textContent = 'SHOW OBJECTS';
+          } else {
+            model.setAttribute('visible', true);
+            document.getElementById('toggleButton').textContent = 'HIDE OBJECTS';
+          }
+        });
+
+        document.getElementById('toggleGuideButton').addEventListener('click', function() {
+            const bottomSheet = document.getElementById('bottomSheet');
+            if (bottomSheet.classList.contains('show')) {
+                bottomSheet.classList.remove('show');
+                this.textContent = 'SHOW GUIDE';
+            } else {
+                bottomSheet.classList.add('show');
+                this.textContent = 'HIDE GUIDE';
+            }
+        });
+
+        document.getElementById('closeSheet').addEventListener('click', function() {
+            const bottomSheet = document.getElementById('bottomSheet');
+            bottomSheet.classList.remove('show');
+            document.getElementById('toggleGuideButton').textContent = 'SHOW GUIDE';
+        });
+      </script>
   </body>
 </html>
