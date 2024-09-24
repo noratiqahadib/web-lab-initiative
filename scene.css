@@ -102,3 +102,20 @@
 .tmblue {
   color: #141cdb;
 }
+
+#scan-text {
+  color: white; 
+  border-radius: 20px; 
+  width: fit-content; 
+  background: rgba(9, 8, 8, 0.21); 
+  padding-left: 10px; 
+  padding-right: 10px; 
+  margin-top: 10px;
+}
+
+#modem-border {
+  width: 250px; 
+  height: 250px; 
+  border: 1px solid orangered; 
+  margin-top: 20px;
+}

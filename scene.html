@@ -121,28 +121,51 @@
       style="
         display: flex;
         justify-content: center;
+        padding-top: 10px;
+      ">
+      <img
+        style="width: 100px"
+        src="./assets/images/unifi-logo.svg"
+      >
+    </div>
+    <div
+      style="
+        display: flex;
+        justify-content: center;
         margin-top: 10px;
         width: 100%;
         text-align: center;
         z-index: 1;
       "
     >
-      <button id="toggleButton" class="button-guide">HIDE OBJECTS</button>
-      <button id="toggleGuideButton" class="button-guide">SHOW GUIDE</button>
+      <button id="toggleButton" class="button-guide grotesk-semibold">HIDE MODEM</button>
+      <button id="toggleGuideButton" class="button-guide grotesk-semibold">SHOW GUIDE</button>
     </div>
-    <div style="height: 90%">
-      <a-scene embedded arjs antialias="true" renderer="webgl">
-        <a-marker preset="hiro" controller>
-          <!-- <a-marker type='pattern' url='./unifi-marker.patt'> -->
-          <a-entity
-            position="1 0 0"
-            scale="0.03 0.03 0.03"
-            rotation="180 360 0"
-            gltf-model="./ImageToStl.com_modem.gltf"
-          ></a-entity>
-        </a-marker>
-        <a-entity camera></a-entity>
-      </a-scene>
+    <div 
+      style="
+        height: 90%;
+        display: flex;
+        justify-content: center;
+    ">
+      <div>
+        <div id="modem-border">
+          <a-scene embedded arjs antialias="true" renderer="webgl">
+            <a-marker preset="hiro" controller>
+              <!-- <a-marker type='pattern' url='./unifi-marker.patt'> -->
+              <a-entity
+                position="1 0 0"
+                scale="0.03 0.03 0.03"
+                rotation="180 360 0"
+                gltf-model="assets/model/ImageToStl.com_modem.gltf"
+              ></a-entity>
+            </a-marker>
+            <a-entity camera></a-entity>
+          </a-scene>
+        </div>
+        <div id="scan-text">
+          Scan Hiro marker to view modem
+        </div>
+      </div>
     </div>
 
     <div id="bottomSheet" class="bottom-sheet">
@@ -177,10 +200,10 @@
         <div class="row">
           <div class="col-2">
             <img
-              src="assets/images/power_button.png"
+              src="assets/images/shutdown-btn.png"
               alt="Step 1"
               class="step-icon"
-              style="width: 50px; height: 50px"
+              style="width: 45px; height: 45px"
             />
           </div>
           <div class="col-10">
@@ -196,10 +219,10 @@
         <div class="row">
           <div class="col-2">
             <img
-              src="assets/images/Spanner.png"
+              src="assets/images/spanner.png"
               alt="Step 1"
               class="step-icon"
-              style="width: 50px; height: 50px"
+              style="width: 45px; height: 45px"
             />
           </div>
           <div class="col-10">
@@ -232,10 +255,10 @@
         const model = document.querySelector("a-marker a-entity");
         if (model.getAttribute("visible")) {
           model.setAttribute("visible", false);
-          document.getElementById("toggleButton").textContent = "SHOW OBJECTS";
+          document.getElementById("toggleButton").textContent = "SHOW MODEM";
         } else {
           model.setAttribute("visible", true);
-          document.getElementById("toggleButton").textContent = "HIDE OBJECTS";
+          document.getElementById("toggleButton").textContent = "HIDE MODEM";
         }
       });
 
