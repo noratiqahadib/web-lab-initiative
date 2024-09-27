@@ -28,6 +28,9 @@
           .querySelector("[gltf-model]")
           .addEventListener("model-loaded", (evt) => {
             this.mesh = evt.detail.model;
+
+            // Highlight specific parts of the model
+            this.highlightPart(this.mesh);
           });
         // hammerjs input helper
         const hammertime = new Hammer(document.body);
@@ -93,6 +96,23 @@
           this.swipeVelocityDown = velocity;
         });
       },
+
+        // Function to highlight specific part of the model
+        highlightPart: function (model) {
+            // Traverse through the model and find `node1`
+            model.traverse(function (node) {
+            if (node.name === 'Node3') {
+                // Change the material color to yellow
+                if (node.material) {
+                  // Clone the material to avoid changing it for other nodes
+                  node.material = node.material.clone();
+                  // Change the material color to yellow
+                  node.material.color.set('yellow');
+                }
+            }
+            });
+        },
+
       tick: function () {
         if (this.modelVisible && this.swipeVelocity && !this.isPanning) {
           this.mesh.rotation.y += (this.swipeVelocity * 4 * Math.PI) / 360;
@@ -149,14 +169,15 @@
     ">
       <div>
         <div id="modem-border">
-          <a-scene embedded arjs antialias="true" renderer="webgl">
+          <a-scene embedded arjs="sourceWidth:1920; sourceHeight:1080; displayWidth: 1920; displayHeight: 1080">
             <a-marker preset="hiro" controller>
               <!-- <a-marker type='pattern' url='./unifi-marker.patt'> -->
               <a-entity
+              id="modemModel"
                 position="1 0 0"
                 scale="0.03 0.03 0.03"
                 rotation="180 360 0"
-                gltf-model="assets/model/ImageToStl.com_modem.gltf"
+                gltf-model="assets/model/3mfmodem.gltf"
               ></a-entity>
             </a-marker>
             <a-entity camera></a-entity>
@@ -212,6 +233,7 @@
                 Reboot all Unifi Equipment.
               </span>
               <br />
+              <span>The power button is usually located behind the router/modem as shown in the AR</span>
             </p>
           </div>
         </div>
